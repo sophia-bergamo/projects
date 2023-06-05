@@ -2,6 +2,7 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { validEmail, validPassword } from "./utils/regex";
 import { gql, useMutation } from '@apollo/client';
+import path from "path";
 
 const MUTATION = gql`
 mutation Login($data: LoginInput!) {
@@ -15,6 +16,7 @@ mutation Login($data: LoginInput!) {
 }
 `;
 
+//tipagem dos dados para executar no typescript
 type LoginInput = {
   data: {
     email: string;
@@ -42,6 +44,8 @@ function App() {
 
   const [mutation, { data, loading, error }] = useMutation<LoginResult, LoginInput>(MUTATION);
 
+  //useEffect => retorna algo que só em um momento específico (condição e array de dependência)
+  // (nesse caso só quando o data for atualizado ele vai executar guardar o token)
   useEffect(() => {
     if (data?.login.token) {
       localStorage.setItem("token", data.login.token) //set guarda e get pega
@@ -53,6 +57,7 @@ function App() {
 
   console.log(data)
 
+  //função onde acontece a validação dos campos
   const validate = () => {
     if (!validEmail.test(email)) {
       setInputEmailErr(true);
@@ -64,7 +69,8 @@ function App() {
     } else {
       setInputPasswordErr(false);
     }
-
+    /*if que valida o email e a senha para executar a mutation 
+    (se os dois forem ok, valida pra mutation onde estão os dados)*/
     if (validEmail.test(email) && validPassword.test(password)) {
       mutation({ variables: { data: { email, password } } })
     }
@@ -79,7 +85,7 @@ function App() {
       <input type="password" placeholder="example01" value={password} onChange={(event) => setPassword(event.target.value)} />
       {inputPassordErr && <p>Digite uma senha mais segura</p>}
 
-      <button onClick={validate} >ENTRAR</button>
+      <button onClick={validate}>ENTRAR</button>
 
     </div>
   )

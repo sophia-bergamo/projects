@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NewPage from './page';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,11 +17,16 @@ const client = new ApolloClient({
 })
 
 root.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App />} />
+          <Route path='/page' element={<NewPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ApolloProvider>
+  </React.StrictMode>
 );
-
-//solicitação ao servidor
 
 reportWebVitals()
